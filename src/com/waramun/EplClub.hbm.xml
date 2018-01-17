@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 17, 2018 10:55:42 AM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.waramun.EplClub" table="epl_club" catalog="waramundb">
+        <id name="clubId" type="java.lang.Integer">
+            <column name="CLUB_ID" />
+            <generator class="identity" />
+        </id>
+        <property name="stadiumId" type="java.lang.Integer">
+            <column name="STADIUM_ID" />
+        </property>
+        <property name="lastestEplChamp" type="java.lang.Integer">
+            <column name="LASTEST_EPL_CHAMP" />
+        </property>
+        <property name="clubName" type="string">
+            <column name="CLUB_NAME" />
+        </property>
+        <set name="footballPlayer" table="epl_player" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="CLUB_ID" />
+            </key>
+            <many-to-many entity-name="com.waramun.FootballPlayer" >
+            	<column name="PLAYER_ID" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>
