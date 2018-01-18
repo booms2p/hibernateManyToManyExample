@@ -25,7 +25,7 @@ public class MainApp {
 		
 //		main.delete();
 		
-		main.add();
+//		main.add();
 		
 //		main.update(17, "เดเล่", "อัลลีย์");
 		
@@ -48,8 +48,15 @@ public class MainApp {
 				FootballPlayer playerRes = (FootballPlayer) iterator.next();
 				System.out.print("ID: " + playerRes.getPlayerId());
 				System.out.print(", FirstName: " + playerRes.getPlayerFname());
-				System.out.print(", LastName: " + playerRes.getPlayerLname());
-				System.out.println("");
+				System.out.println(", LastName: " + playerRes.getPlayerLname());
+				
+				Set club = playerRes.getEplClub();
+				for(Iterator iterator2 = club.iterator(); iterator2.hasNext();) {
+					EplClub clubList = (EplClub) iterator2.next();
+					System.out.print("Club: " + clubList.getClubName());
+					System.out.println("");
+				}
+				System.out.println("=====================================================");
 			}
 			
 		} catch(HibernateException e) {
