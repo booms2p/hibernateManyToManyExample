@@ -48,7 +48,8 @@ public class MainApp {
 				FootballPlayer playerRes = (FootballPlayer) iterator.next();
 				System.out.print("ID: " + playerRes.getPlayerId());
 				System.out.print(", FirstName: " + playerRes.getPlayerFname());
-				System.out.println(", LastName: " + playerRes.getPlayerLname());
+				System.out.print(", LastName: " + playerRes.getPlayerLname());
+				System.out.println(", Birthdate: " + playerRes.getPlayerBirthdate());
 				
 				Set club = playerRes.getEplClub();
 				for(Iterator iterator2 = club.iterator(); iterator2.hasNext();) {
