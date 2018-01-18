@@ -21,15 +21,15 @@ public class MainApp {
 		
 		MainApp main = new MainApp();
 		
-		main.read();
+//		main.read();
 		
 //		main.delete();
 		
-//		main.add();
+		main.add();
 		
 //		main.update(17, "เดเล่", "อัลลีย์");
 		
-//		main.read();
+		main.read();
 	}
 	
 	public void read() {
@@ -80,11 +80,10 @@ public class MainApp {
 			player.setCountryId(1);
 			Date date = java.sql.Date.valueOf("1993-07-28");
 			player.setPlayerBirthdate(date);
-			
-			EplClub club = new EplClub(1, 0000, "Tottenham Hotspur");
 
 			Set<EplClub> eplClub = new HashSet<EplClub>();
-			eplClub.add(club);
+			eplClub.add(new EplClub(1, 0000, "Tottenham Hotspur"));
+			eplClub.add(new EplClub(1, 0000, "Spur"));
 			
 			player.setEplClub(eplClub);
 			
