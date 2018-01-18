@@ -21,9 +21,47 @@ public class MainApp {
 		
 		MainApp main = new MainApp();
 		
+		main.read();
+		
 //		main.delete();
 		
 //		main.add();
+		
+//		main.update(17, "เดเล่", "อัลลีย์");
+		
+//		main.read();
+	}
+	
+	public void read() {
+		
+		System.out.println("Process Start");
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction trx = null;
+		
+		try {
+			
+			trx = session.beginTransaction();
+			String stm = "FROM FootballPlayer";
+			Query query = session.createQuery(stm);
+			List res = query.list();
+			for (Iterator iterator = res.iterator(); iterator.hasNext();){
+				FootballPlayer playerRes = (FootballPlayer) iterator.next();
+				System.out.print("ID: " + playerRes.getPlayerId());
+				System.out.print(", FirstName: " + playerRes.getPlayerFname());
+				System.out.print(", LastName: " + playerRes.getPlayerLname());
+				System.out.println("");
+			}
+			
+		} catch(HibernateException e) {
+			if (trx != null) trx.rollback();
+			e.printStackTrace();
+			
+		} finally {
+			session.close();
+			System.out.println("Process Done.");
+			
+		}
+		
 	}
 	
 	@SuppressWarnings("unused")
@@ -34,7 +72,7 @@ public class MainApp {
 		Transaction trx = null;
 		
 		try {
-			session.beginTransaction();
+			trx = session.beginTransaction();
 			
 			FootballPlayer player = new FootballPlayer();
 			player.setPlayerFname("แฮรี่");
@@ -64,6 +102,36 @@ public class MainApp {
 		
 	}
 	
+	public void update(int id, String fName, String lName) {
+		
+		System.out.println("Process Start");
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction trx = null;
+		
+		try {
+			trx = session.beginTransaction();
+			FootballPlayer player = (FootballPlayer)session.get(FootballPlayer.class, id);
+			if (fName != null && fName != "") player.setPlayerFname(fName); 
+			
+			if (lName != null && lName != "") player.setPlayerLname(lName);
+			
+			if ((fName != null && fName != "") || (lName != null && lName != "")) {
+				session.update(player);
+				trx.commit();
+			} 
+			
+		} catch(HibernateException e) {
+			if (trx != null) trx.rollback();
+			e.printStackTrace();
+			
+		} finally {
+			session.close();
+			System.out.println("Process Done.");
+			
+		}
+		
+	}
+	
 	@SuppressWarnings({ "unused", "rawtypes" })
 	public void delete () {
 		
@@ -72,7 +140,7 @@ public class MainApp {
 		Transaction trx = null;
 		
 		try {
-			session.beginTransaction();
+			trx = session.beginTransaction();
 			
 			String stm = "FROM FootballPlayer FP WHERE FP.playerLname = 'เคน'";
 			Integer playerId = 0; 
