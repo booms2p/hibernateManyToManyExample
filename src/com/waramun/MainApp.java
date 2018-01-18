@@ -5,7 +5,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import com.waramun.FootballPlayer;
@@ -16,57 +19,92 @@ public class MainApp {
 
 	public static void main(String[] args) {
 		
+		MainApp main = new MainApp();
+		
+//		main.delete();
+		
+//		main.add();
+	}
+	
+	@SuppressWarnings("unused")
+	public void add() {
+		
 		System.out.println("Process Start");
-		
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
+		Transaction trx = null;
 		
-//		Add data
-		FootballPlayer player = new FootballPlayer();
-		player.setPlayerFname("แฮรี่");
-		player.setPlayerLname("เคน");
-		player.setCountryId(1);
-		Date date = java.sql.Date.valueOf("1993-07-28");
-		player.setPlayerBirthdate(date);
-		
-		EplClub club = new EplClub(1, 0000, "Tottenham Hotspur");
+		try {
+			session.beginTransaction();
+			
+			FootballPlayer player = new FootballPlayer();
+			player.setPlayerFname("แฮรี่");
+			player.setPlayerLname("เคน");
+			player.setCountryId(1);
+			Date date = java.sql.Date.valueOf("1993-07-28");
+			player.setPlayerBirthdate(date);
+			
+			EplClub club = new EplClub(1, 0000, "Tottenham Hotspur");
 
-		Set<EplClub> eplClub = new HashSet<EplClub>();
-		eplClub.add(club);
+			Set<EplClub> eplClub = new HashSet<EplClub>();
+			eplClub.add(club);
+			
+			player.setEplClub(eplClub);
+			
+			session.save(player);
+			session.getTransaction().commit();
+			
+		} catch (HibernateException e) {
+			if (trx != null) trx.rollback();
+			e.printStackTrace();
+			
+		} finally {
+			session.close();
+			System.out.println("Process Done.");
+		}
 		
-		player.setEplClub(eplClub);
+	}
+	
+	@SuppressWarnings({ "unused", "rawtypes" })
+	public void delete () {
 		
-		session.save(player);
-//		===========================
+		System.out.println("Process Start");
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction trx = null;
 		
-//		Delete data
-//		FootballPlayer player = (FootballPlayer)session.get(FootballPlayer.class, 28);
-//		EplClub club = (EplClub)session.get(EplClub.class, 3);
-//		player.getEplClub().remove(club);
-//		===========================
-		
-//		String stm = "FROM FootballPlayer FP WHERE FP.playerLname = 'เคน'";
-//		Integer a = 0; 
-//		Query query = session.createQuery(stm);
-//		List res = query.list();
-//		for (Iterator iterator = res.iterator(); iterator.hasNext();){
-//			FootballPlayer playerRes = (FootballPlayer) iterator.next();
-//			System.out.print(playerRes.getPlayerFname());
-//			System.out.print(" ");
-//			System.out.print(playerRes.getPlayerLname());
-//			System.out.println("");
-//			a = playerRes.getPlayerId();
-//		}
-//		
-//		System.out.println(a);
-//		FootballPlayer player = (FootballPlayer)session.get(FootballPlayer.class, a);
-//		session.delete(player);
-//		
-//		===========================
-		
-		session.getTransaction().commit();
-		session.close();
-		System.out.println("Process Done.");
+		try {
+			session.beginTransaction();
+			
+			String stm = "FROM FootballPlayer FP WHERE FP.playerLname = 'เคน'";
+			Integer playerId = 0; 
+			Query query = session.createQuery(stm);
+			List res = query.list();
+			for (Iterator iterator = res.iterator(); iterator.hasNext();){
+				FootballPlayer playerRes = (FootballPlayer) iterator.next();
+				System.out.print(playerRes.getPlayerFname());
+				System.out.print(" ");
+				System.out.print(playerRes.getPlayerLname());
+				System.out.println("");
+				playerId = playerRes.getPlayerId();
+			}
+			
+			if (playerId > 0) {
+				System.out.println(playerId);
+				FootballPlayer player = (FootballPlayer)session.get(FootballPlayer.class, playerId);
+				session.delete(player);
+				session.getTransaction().commit();
+			} else {
+				System.out.println("Cannot find specify player data.");
+			}
+			
+		} catch (HibernateException e) {
+			if (trx != null) trx.rollback();
+			e.printStackTrace();
+			
+		} finally {
+			session.close();
+			System.out.println("Process Done.");
+			
+		}
 		
 	}
 
